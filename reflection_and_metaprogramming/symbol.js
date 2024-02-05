@@ -62,3 +62,69 @@ class MyArray extends Array {
 
 new MyArray(1, 2, 3).filter(x => x > 2) instanceof MyArray; // false
 new MyArray(1, 2, 3).filter(x => x > 2) instanceof Array; // true
+
+// ==================================================
+
+class Itarable {
+    static [Symbol.hasInstance](obj) {
+        if (obj == null) return false;
+
+        return typeof obj[Symbol.iterator] === 'function';
+    }
+}
+
+// ==================================================
+
+// var a = {
+//     valueOf() {
+//         return 10;
+//     },
+//
+//     toString() {
+//         return '15';
+//     }
+// }
+
+var a = {
+    [Symbol.toPrimitive](hint) {
+        console.log(hint);
+
+        switch (hint) {
+            case 'number':
+                return 10;
+            case 'string':
+                return '15';
+            default:
+                return 0;
+        }
+    }
+}
+
+// ==================================================
+
+var a = {
+    [Symbol.toStringTag]: 'MyObject'
+}
+
+// ({}).toString.call(a)
+// '[object MyObject]'
+
+// ==================================================
+
+var a = {
+    a: 1,
+    b: 2,
+    [Symbol.unscopables]: {
+        b: true
+    }
+}
+
+var b = 15;
+
+with (a) {
+    console.log(a);
+    console.log(b);
+}
+
+// 1
+// 15
